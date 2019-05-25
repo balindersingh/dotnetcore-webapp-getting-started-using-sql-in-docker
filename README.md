@@ -128,53 +128,54 @@ dotnet build
 dotnet run
 ```
 ### It should show you where website is hosted locally on your machine. You should be able to go to that localhost (ignore https warning and proceed).
-# All next steps are optional, if you want to add more functionality For example : a class/table i.e. Project and its scaffolded views etc.
+# OPTIONAL- If you want to add your custom code now to extend its functionality.
+###  if you want to add more functionality For example : a class/table i.e. Project and its scaffolded views etc.
 ```
 dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
 dotnet aspnet-codegenerator identity -dc WebApp1.Data.ApplicationDbContext --files "Account.Register;Account.Login;Account.Logout"
 ```
-## You might get 'No executable found matching command "dotnet-aspnet-codegenerator"' error when you ran last command . It means you might be missing dotnetcore code generation tool on your machine. Before netcore 2.1 release it used to be a local nuget package reference but with 2.1 release it has to be installed gloabblly. To fix that run following command and it will install dotnet code generation tool on your machine globally.
+### You might get 'No executable found matching command "dotnet-aspnet-codegenerator"' error when you ran last command . It means you might be missing dotnetcore code generation tool on your machine. Before netcore 2.1 release it used to be a local nuget package reference but with 2.1 release it has to be installed gloabblly. To fix that run following command and it will install dotnet code generation tool on your machine globally.
 ```
 dotnet tool install --global dotnet-aspnet-codegenerator
 ```
 Screenshot-dotnet-apnet-generator
 
 ---
-# Now let's Create a new model class i.e. Project.cs in Models folder. See example in refrenced MS Doc (dotnet model)
-# Create one more class i.e. ProjectDBContext.cs in 'Data' folder. See example in refrenced MS Doc (dotnet model)
-# Now we have the Model class we can scaffold controller actions and CRUD views under Views folder. To do that we will use 'aspnet-codegenerator'. 
+### Now let's Create a new model class i.e. Project.cs in Models folder. See example in refrenced MS Doc (dotnet model)
+### Create one more class i.e. ProjectDBContext.cs in 'Data' folder. See example in refrenced MS Doc (dotnet model)
+### Now we have the Model class we can scaffold controller actions and CRUD views under Views folder. To do that we will use 'aspnet-codegenerator'. 
 ```
 dotnet aspnet-codegenerator controller -name ProjectsController -m Project -dc ProjectDBContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
 ```
 ### Make sure you have it installed already (above 2.1 you need to install it globallly on your local machine before 2.1 dotnet core it can be installed locally to a project)
 
-# Now in StartUp.cs -> ConfigureServices method add following line after the existing AddDbContext command
+### Now in StartUp.cs -> ConfigureServices method add following line after the existing AddDbContext command
 ```
 services.AddDbContext<ProjectDBContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 ```
-# Now run migrations for new model
-### If you already have more then 1 context then you need to pass --context <yournewmodelcontext>. the one you added in ConfigureServices
+### Now run migrations for new model
+#### If you already have more then 1 context then you need to pass --context <yournewmodelcontext>. the one you added in ConfigureServices
 ```
 dotnet ef migrations add InitialProjectModelCreate --context ProjectDBContext
 ```
-### You will notice a new folder name called 'Migrations' with some files.
-### Above command basically generates a script to create the initial database schema. The database schema is based on the model specified in the ProjectDBContext class (in the Data/ProjectDBContext.cs file). 
-# Now let's update the DB with the changes we intend to migrate with the above migration
+#### You will notice a new folder name called 'Migrations' with some files.
+#### Above command basically generates a script to create the initial database schema. The database schema is based on the model specified in the ProjectDBContext class (in the Data/ProjectDBContext.cs file). 
+### Now let's update the DB with the changes we intend to migrate with the above migration
 ```
 dotnet ef database update  --context ProjectDBContext
 ```
-## At this point DB Table should be created in your SQL DB
-# Now let's build the solution and run it
+#### At this point DB Table should be created in your SQL DB
+### Now let's build the solution and run it
 ```
 dotnet build
 dotnet run
 ```
-## It should show you a link with port number where current site is hosted on your localhost
+#### It should show you a link with port number where current site is hosted on your localhost
 
-# How to add new fields into existing table/model class
-## Simply add properties with Data Annotations in your Model/Project.cs class as mentioned in refrenced link (MS Doc below). Then run the following commands:
+## How to add new fields into existing table/model class
+### Simply add properties with Data Annotations in your Model/Project.cs class as mentioned in refrenced link (MS Doc below). Then run the following commands:
 ```
 dotnet ef migrations add InitialProjectDBModelUpdate --context ProjectDBContext
 dotnet ef database update  --context ProjectDBContext
